@@ -1,4 +1,3 @@
-import random
 import pygame
 from pygame.constants import QUIT
 
@@ -27,7 +26,7 @@ playing = True
 
 while playing: 
     # print("Hello from pygame")
-    FPS.tick(240)
+    FPS.tick(120)
     for event in pygame.event.get():
         if event.type == QUIT:
             playing = False
@@ -36,19 +35,15 @@ while playing:
 
     if player_rect.bottom >= HEIGHT:
         player_speed[1] = -player_speed[1]
-        player_speed[0] = random.choice((1,-1))
 
     if player_rect.top < 0:
-        player_speed[1] = -player_speed[1]
-        player_speed[0] = random.choice((1,-1))    
+        player_speed[1] = -player_speed[1]    
 
     if player_rect.right >= WIDTH:
         player_speed[0] = -player_speed[0]
-        player_speed[1] = random.choice((1,-1))
 
     if player_rect.left < 0:
         player_speed[0] = -player_speed[0]    
-        player_speed[1] = random.choice((1,-1))
 
     main_display.blit(player, player_rect)
     print("left", player_rect.left,"top:",player_rect.top,"bottom:",player_rect.bottom," right:",player_rect.right)
