@@ -13,7 +13,7 @@ COLOR_BLACK = (0, 0, 0)
 
 FPS = pygame.time.Clock()
 
-main_display = pygame.display.set_mode((HEIGHT, WIDTH))
+main_display = pygame.display.set_mode((WIDTH, HEIGHT))
 
 player_size = (20, 20)
 
@@ -46,7 +46,7 @@ while playing:
         player_speed[0] = -player_speed[0]    
 
     main_display.blit(player, player_rect)
-    print("bottom:",player_rect.bottom," right:",player_rect.right)
+    print("left", player_rect.left,"top:",player_rect.top,"bottom:",player_rect.bottom," right:",player_rect.right)
     player_rect = player_rect.move(player_speed)
 
     pygame.display.flip()
