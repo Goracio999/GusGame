@@ -33,25 +33,51 @@ player_move_left = [-1, 0]
 player_move_right = [1, 0]
 
 # Initialize enemy
-enemy_size = (30, 30)
-enemy_color = COLOR_RED
-enemy = pygame.Surface(enemy_size)
-enemy.fill(enemy_color)
-enemy_rect = pygame.Rect(WIDTH-100, 100, *enemy_size)
-enemy_speed = [-1, 1]
+def create_enimy():
+    enemy_size = (30, 30)
+    enemy_color = COLOR_RED
+    enemy = pygame.Surface(enemy_size)
+    enemy.fill(enemy_color)
+    enemy_rect = pygame.Rect(WIDTH, random.randint(0, HEIGHT), *enemy_size)
+    enemy_speed = [random.randint(-5, -1), 0]
+    return [enemy, enemy_rect, enemy_speed]
+
+CREATE_ENEMY = pygame.USEREVENT + 1
+pygame.time.set_timer(CREATE_ENEMY, 1500)
+enemies = []
+
+# Initialize bonus
+def create_bonus():
+    bonus_size = (20, 20)
+    bonus_color = COLOR_GREEN
+    bonus = pygame.Surface(bonus_size)
+    bonus.fill(bonus_color)
+    bonus_rect = pygame.Rect(random.randint(0, WIDTH), 0, *bonus_size)
+    bonus_move = [0, 1]
+    return [bonus, bonus_rect, bonus_move]
+
+CREATE_BONUS = pygame.USEREVENT + 2
+pygame.time.set_timer(CREATE_BONUS, 2500)
+bonuses = []
 
 # Starting game process
 playing = True
 
 while playing: 
     # print("Hello from pygame")
-    FPS.tick(240)
+    FPS.tick(120)
     for event in pygame.event.get():
         if event.type == QUIT:
             playing = False
+        if event.type == CREATE_ENEMY:
+            enemies.append(create_enimy())
+        if event.type == CREATE_BONUS:
+            bonuses.append(create_bonus())
+
 
     main_display.fill(display_color)
 
+# Arrow keys processing - drive the player
     keys = pygame.key.get_pressed()
 
     if keys[K_DOWN]:
@@ -61,7 +87,6 @@ while playing:
         else:
             print("Bottom reached")
         print("left", player_rect.left,"top:",player_rect.top,"bottom:",player_rect.bottom," right:",player_rect.right)    
-
 
     if keys[K_UP]:
         print("Up pressed") 
@@ -88,27 +113,24 @@ while playing:
             print("Right border reached")
         print("left", player_rect.left,"top:",player_rect.top,"bottom:",player_rect.bottom," right:",player_rect.right)
 
-    if enemy_rect.bottom >= HEIGHT:
-        enemy_speed[1] = -enemy_speed[1]
-    #     enemy_speed[0] = random.choice((1,-1))
-
-    if enemy_rect.top <= 0:
-        enemy_speed[1] = -enemy_speed[1]
-    #     player_speed[0] = random.choice((1,-1))    
-
-    if enemy_rect.right >= WIDTH:
-        enemy_speed[0] = -enemy_speed[0]
-    #     player_speed[1] = random.choice((1,-1))
-
-    if enemy_rect.left <= 0:
-        enemy_speed[0] = -enemy_speed[0]    
-    #     player_speed[1] = random.choice((1,-1))
-    enemy_rect = enemy_rect.move(enemy_speed)
-
     main_display.blit(player, player_rect)
-    main_display.blit(enemy, enemy_rect)
 
-    # print("left", player_rect.left,"top:",player_rect.top,"bottom:",player_rect.bottom," right:",player_rect.right)
-    # player_rect = player_rect.move(player_speed)
+# processing enemies
+    for enemy in enemies:
+        enemy[1] = enemy[1].move(enemy[2])
+        main_display.blit(enemy[0], enemy[1])
+        # deleting out of scene objects
+        if enemy[1].right < 0:
+            enemies.pop(enemies.index(enemy))
+
+# processing bonuses
+    for bonus in bonuses:
+        bonus[1] = bonus[1].move(bonus[2])
+        main_display.blit(bonus[0], bonus[1])
+        # deleting out of scene objects
+        if bonus[1].top > HEIGHT:
+            bonuses.pop(bonuses.index(bonus))
+
+    print("Enimies: ", len(enemies), "Bonuses: ", len(bonuses))
 
     pygame.display.flip()
