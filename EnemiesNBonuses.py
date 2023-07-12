@@ -8,9 +8,6 @@ print("Hello World! Let's go!")
 
 HEIGHT = 800
 WIDTH = 600
-
-FONT = pygame.font.SysFont('Verdana', 20)
-
 # setting color constants
 COLOR_WHITE = (255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
@@ -34,7 +31,6 @@ player_move_down = [0, 1]
 player_move_up = [0, -1]
 player_move_left = [-1, 0]
 player_move_right = [1, 0]
-player_score = 0
 
 # Initialize enemy
 def create_enimy():
@@ -118,16 +114,11 @@ while playing:
         print("left", player_rect.left,"top:",player_rect.top,"bottom:",player_rect.bottom," right:",player_rect.right)
 
     main_display.blit(player, player_rect)
-    main_display.blit(FONT.render(str(player_score), True, COLOR_WHITE), (WIDTH-50, 20))
 
 # processing enemies
     for enemy in enemies:
         enemy[1] = enemy[1].move(enemy[2])
         main_display.blit(enemy[0], enemy[1])
-        # player damage detection
-        if player_rect.colliderect(enemy[1]):
-            print("Boooooooom!")
-            playing = False
         # deleting out of scene objects
         if enemy[1].right < 0:
             enemies.pop(enemies.index(enemy))
@@ -136,15 +127,10 @@ while playing:
     for bonus in bonuses:
         bonus[1] = bonus[1].move(bonus[2])
         main_display.blit(bonus[0], bonus[1])
-        # catching by player detection
-        if player_rect.colliderect(bonus[1]):
-            print("Yes! We catched it!")
-            player_score += 1
-            bonuses.pop(bonuses.index(bonus))
         # deleting out of scene objects
         if bonus[1].top > HEIGHT:
             bonuses.pop(bonuses.index(bonus))
 
-    # print("Enimies: ", len(enemies), "Bonuses: ", len(bonuses))
+    print("Enimies: ", len(enemies), "Bonuses: ", len(bonuses))
 
     pygame.display.flip()
